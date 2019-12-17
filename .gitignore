@@ -1,0 +1,8 @@
+.idea
+target
+*.log
+
+# cucumber output files
+cucumber-junit-report.xml
+cucumber.json
+cucumber-html/
