@@ -1,6 +1,18 @@
 package com.whitehatgaming.chess.models.piece
+import com.whitehatgaming.chess.models.piece.rules.DirectionType
 
-case class Rook extends Piece ()
+/*
+* The rook can move any number of squares but only horizontally or vertically
+*/
+
+case class Rook(_isBlack: Boolean) extends Piece {
+
+  override var isBlack: Boolean = _isBlack
+  override var directionTypes: List[DirectionType] = List(DirectionType.Vertical, DirectionType.Horizontal)
+
+  override def toString: String = Piece.ROOK
+
+}
 
 object Rook {
 

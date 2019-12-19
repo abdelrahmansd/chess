@@ -1,20 +1,26 @@
 package com.whitehatgaming.chess.models.piece
 
-import com.whitehatgaming.chess.models.rules.DirectionType
+import com.whitehatgaming.chess.models.piece.rules.{DirectionType, MoveType}
 
 trait Piece {
-  var killed = false
-  var direction: List[DirectionType]
+
+  var isKilled = false
+  var moveType: MoveType = MoveType.Multi
+  var isBiDirectional: Boolean = true
+
+  var isBlack: Boolean
+  var directionTypes: List[DirectionType]
 
   override def toString: String
-  def isKilled: Boolean = killed
-  def isBiDirectional: Boolean = true
-
-  def kill(): Unit  = {
-    killed = true
-  }
 }
 
 object Piece {
+
+  val BISHOP = "Bishop"
+  val KING = "King"
+  val KNIGHT = "KNight"
+  val PAWN = "Pawn"
+  val QUEEN = "Queen"
+  val ROOK = "Rook"
 
 }
