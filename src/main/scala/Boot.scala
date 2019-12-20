@@ -8,7 +8,8 @@ object Boot extends App {
   val board = new Board()
   board.init
   board.render
-  println(board.avaliableMoves(Point(1,0)))
+  println(board.getTile(Point(0,0)))
+  println(board.avaliableMoves(Point(0,0)))
 //  val move = Move(Point(1,1), Point(3,1),)
 
 }
