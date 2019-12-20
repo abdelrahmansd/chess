@@ -33,8 +33,10 @@ class Board() {
 
     // init Black Pieces
     tiles(0)(0) = Tile(coordinates = Point(0 , 0), piece = Some(Rook(true)))
-    tiles(0)(1) = Tile(coordinates = Point(0 , 1), piece = Some(KNight(true)))
-    tiles(0)(2) = Tile(coordinates = Point(0 , 2), piece = Some(Bishop(true)))
+    tiles(0)(1) = Tile(coordinates = Point(0 , 1), piece = None)
+//    tiles(0)(1) = Tile(coordinates = Point(0 , 1), piece = Some(KNight(true)))
+    tiles(0)(2) = Tile(coordinates = Point(0 , 2), piece = None)
+//    tiles(0)(2) = Tile(coordinates = Point(0 , 2), piece = Some(Bishop(true)))
     tiles(0)(3) = Tile(coordinates = Point(0 , 3), piece = Some(Queen(true)))
     tiles(0)(4) = Tile(coordinates = Point(0 , 4), piece = Some(King(true)))
     tiles(0)(5) = Tile(coordinates = Point(0 , 5), piece = Some(Bishop(true)))
@@ -126,30 +128,82 @@ class Board() {
           piece.directionTypes.map(directionType => {
             directionType match {
               case DirectionType.Vertical => {
-                val loop = new Breaks
-                loop.breakable {
-                  for (x <- point.x to 7) { // up to down
-                    val nextTile = getTile(Point(x, point.y))
-                    val checkNextTile = nextTile.isDefined && nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack
-                    if (nextTile.isDefined && (nextTile.get.piece.isEmpty || checkNextTile)) validTiles :+= nextTile.get
-                    if (checkNextTile) loop.break
-                  }
+//                val loop = new Breaks
+//                loop.breakable {
+//                  for (x <- point.x to 7) { // up to down
+//                    val nextTile = getTile(Point(x, point.y))
+//                    val checkNextTile = nextTile.isDefined && nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack
+//                    if (nextTile.isDefined && (nextTile.get.piece.isEmpty || checkNextTile)) validTiles :+= nextTile.get
+//                    if (checkNextTile) loop.break
+//                  }
+//                }
+
+                var checkNextTile = true
+                var x = point.x + 1
+                while (checkNextTile && x <= 7 ){ // up to down
+                  val nextTile = getTile(Point(x, point.y))
+                  val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
+
+                  x += 1
+                  checkNextTile = nextTile.isDefined && !nextTile.get.piece.isDefined
+
                 }
 
-                for(x <- point.x to 0 by -1 ) { // down to up
+//                for(x <- point.x to 0 by -1 ) { // down to up
+//                  val nextTile = getTile(Point(x, point.y))
+//                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+//                }
+                checkNextTile = true
+                x = point.x - 1
+                while ( checkNextTile && x >= 0){ // down to up
                   val nextTile = getTile(Point(x, point.y))
-                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                  val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
+
+                  x -= 1
+                  checkNextTile = nextTile.isDefined && !nextTile.get.piece.isDefined
+
+
                 }
+
               }
               case DirectionType.Horizontal => {
-                for(y <- point.y to 7 ) { // left to right
+                println("HOOOOOOOOOOOOOOOOOOOOOOOOOOR")
+//                for(y <- point.y to 7 ) { // left to right
+//                  val nextTile = getTile(Point(point.x, y))
+//                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+//                }
+
+                var checkNextTile = true
+                var y = point.y + 1
+                while (checkNextTile && y <= 7){ // left to right
+                  println("-*************************************************")
                   val nextTile = getTile(Point(point.x, y))
-                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                  println(nextTile)
+                  val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
+
+                  y += 1
+                  checkNextTile = nextTile.isDefined && !nextTile.get.piece.isDefined
                 }
 
-                for(y <- point.y to 0 by -1 ) { // right to left
+//                for(y <- point.y to 0 by -1 ) { // right to left
+//                  val nextTile = getTile(Point(point.x, y))
+//                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+//                }
+
+                checkNextTile = true
+                y = point.y - 1
+
+                while ( checkNextTile && y >= 0){ // right to left
                   val nextTile = getTile(Point(point.x, y))
-                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                  val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
+
+                  y -= 1
+                  checkNextTile = nextTile.isDefined && !nextTile.get.piece.isDefined
                 }
               }
               case DirectionType.Diagonal => {
