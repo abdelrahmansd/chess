@@ -1,8 +1,11 @@
 package com.whitehatgaming.chess.models.Board
 
+import scala.util.control.Breaks._
 import com.whitehatgaming.chess.models.Game.Move
 import com.whitehatgaming.chess.models.piece._
 import com.whitehatgaming.chess.models.piece.rules.DirectionType
+
+import scala.util.control.Breaks
 
 class Board() {
 
@@ -123,10 +126,14 @@ class Board() {
           piece.directionTypes.map(directionType => {
             directionType match {
               case DirectionType.Vertical => {
-                for(x <- point.x to 7 ) { // up to down
-                  val nextTile = getTile(Point(x, point.y))
-                  val checkNextTile = nextTile.isDefined && nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack
-                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || checkNextTile )) validTiles :+= nextTile.get
+                val loop = new Breaks
+                loop.breakable {
+                  for (x <- point.x to 7) { // up to down
+                    val nextTile = getTile(Point(x, point.y))
+                    val checkNextTile = nextTile.isDefined && nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack
+                    if (nextTile.isDefined && (nextTile.get.piece.isEmpty || checkNextTile)) validTiles :+= nextTile.get
+                    if (checkNextTile) loop.break
+                  }
                 }
 
                 for(x <- point.x to 0 by -1 ) { // down to up
@@ -147,9 +154,9 @@ class Board() {
               }
               case DirectionType.Diagonal => {
                 var checkNextTile = true
+                var x = point.x
+                var y = point.y
                 while (checkNextTile){ // down to right
-                  var x = point.x
-                  var y = point.y
 
                   val nextTile = getTile(Point({x += 1; x}, {y += 1; y}))
                   if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
@@ -157,9 +164,9 @@ class Board() {
 
                 }
                 checkNextTile = true
+                x = point.x
+                y = point.y
                 while (checkNextTile){ // down to left
-                  var x = point.x
-                  var y = point.y
 
                   val nextTile = getTile(Point({x += 1; x}, {y -= 1; y}))
                   if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
@@ -167,9 +174,9 @@ class Board() {
 
                 }
                 checkNextTile = true
+                x = point.x
+                y = point.y
                 while (checkNextTile){ // up to right
-                  var x = point.x
-                  var y = point.y
 
                   val nextTile = getTile(Point({x -= 1; x}, {y += 1; y}))
                   if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
@@ -178,9 +185,9 @@ class Board() {
                 }
 
                 checkNextTile = true
+                x = point.x
+                y = point.y
                 while (checkNextTile){ // up to left
-                  var x = point.x
-                  var y = point.y
 
                   val nextTile = getTile(Point({x -= 1; x}, {y -= 1; y}))
                   if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
