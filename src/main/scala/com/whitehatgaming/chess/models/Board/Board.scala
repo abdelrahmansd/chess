@@ -2,6 +2,7 @@ package com.whitehatgaming.chess.models.Board
 
 import com.whitehatgaming.chess.models.Game.Move
 import com.whitehatgaming.chess.models.piece._
+import com.whitehatgaming.chess.models.piece.rules.DirectionType
 
 class Board() {
 
@@ -118,7 +119,103 @@ class Board() {
         }
       }
       case Some(piece: Piece) => {
-          
+          piece.directionTypes.map(directionType => {
+            directionType match {
+              case DirectionType.Vertical => {
+                for(y <- point.y to 7 ) { // up to down
+                  val nextTile = getTile(Point(point.x, y))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                }
+
+                for(y <- point.y to 0 by -1 ) { // down to up
+                  val nextTile = getTile(Point(point.x, y))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                }
+              }
+              case DirectionType.Horizontal => {
+                for(x <- point.x to 7 ) { // left to right
+                  val nextTile = getTile(Point(x, point.y))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                }
+
+                for(x <- point.x to 0 by -1 ) { // right to left
+                  val nextTile = getTile(Point(x, point.y))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                }
+              }
+              case DirectionType.Diagonal => {
+                var checkNextTile = true
+                while (checkNextTile){ // down to right
+                  var x = point.x
+                  var y = point.y
+
+                  val nextTile = getTile(Point({x += 1; x}, {y += 1; y}))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                  else checkNextTile = false
+
+                }
+                checkNextTile = true
+                while (checkNextTile){ // down to left
+                  var x = point.x
+                  var y = point.y
+
+                  val nextTile = getTile(Point({x += 1; x}, {y -= 1; y}))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                  else checkNextTile = false
+
+                }
+                checkNextTile = true
+                while (checkNextTile){ // up to right
+                  var x = point.x
+                  var y = point.y
+
+                  val nextTile = getTile(Point({x -= 1; x}, {y += 1; y}))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                  else checkNextTile = false
+
+                }
+
+                checkNextTile = true
+                while (checkNextTile){ // up to left
+                  var x = point.x
+                  var y = point.y
+
+                  val nextTile = getTile(Point({x -= 1; x}, {y -= 1; y}))
+                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+                  else checkNextTile = false
+
+                }
+              }
+              case DirectionType.LShape => {
+                var nextTile = getTile(Point(point.x + 1, point.y + 2)) // down right
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                 nextTile = getTile(Point(point.x - 1, point.y + 2)) // down left
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                nextTile = getTile(Point(point.x + 1, point.y - 2)) // up right
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                nextTile = getTile(Point(point.x - 1, point.y - 2)) // up left
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+
+                nextTile = getTile(Point(point.x + 2, point.y - 1)) // right down
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                nextTile = getTile(Point(point.x - 2, point.y - 1)) // left down
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                nextTile = getTile(Point(point.x + 2, point.y + 1)) // right up
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+                nextTile = getTile(Point(point.x - 2, point.y + 1)) // left up
+                if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
+
+
+              }
+            }
+          })
       }
       case None => List.empty[Tile]
     }
