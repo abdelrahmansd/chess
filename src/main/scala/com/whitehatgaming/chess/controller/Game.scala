@@ -21,20 +21,23 @@ class Game (input: UserInputFile) {
     var gameOver = false
     var nextMove = input.nextMove
     while (nextMove != null && !gameOver) {
-      scala.io.StdIn.readLine("press enter for next move!")
+      scala.io.StdIn.readLine(s"press enter for next move(${if(nextTurn.isBlack) "(black)" else "(white)"})!")
       val p1 = Point(nextMove(1), nextMove(0))
       val p2 = Point(nextMove(3), nextMove(2))
 
       val moveRes: MoveResponse = board.move(Move(p1, p2, nextTurn))
       if (!moveRes.isValid) println("Invalid Move!")
-      else board.render
+      else {
+        nextTurn = if (nextTurn == player1) player2 else player1
+        board.render
+      }
 
       if (moveRes.isValid && board.isKingChecked(p2)) println(s"${nextTurn.name}'s King Is CHECKED!")
-      if (moveRes.killedPiece.isDefined && moveRes.killedPiece.get.toString == Piece.KING) {
+      if (moveRes.killedPiece.isDefined && moveRes.killedPiece.get.toString.contains(Piece.KING)) {
         gameOver = true
-        println(s"${nextTurn.toString} WIN!")
+        val winner = if (nextTurn == player1) player2 else player1
+        println(s"${winner.toString} WIN!")
       }
-      if (moveRes.isValid) nextTurn = if (nextTurn == player1) player2 else player1
       nextMove = input.nextMove
     }
   }

@@ -6,7 +6,7 @@ object Boot extends App {
 
   println("Hello chess!")
 
-  val input = new UserInputFile("/run/media/thug/OLD-REPOS/swvl/chess-demo/src/test/scala/data/checkmate.txt")
+  val input = new UserInputFile("/run/media/thug/OLD-REPOS/swvl/chess-demo/src/test/scala/data/gameover.txt")
 
   val board =new Board()
   board.init

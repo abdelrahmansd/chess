@@ -172,28 +172,20 @@ class Board() {
     if (isValidMove) {
       currentTile.piece.get match {
         case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
-        case _ => print()
+        case _ => print("")
       }
       val nextTile = getTile(move.next).get
-
+      val killedPiece = nextTile.piece
       nextTile.piece = currentTile.piece
       currentTile.reset
-      MoveResponse(isValidMove, nextTile.piece)
+      MoveResponse(isValidMove, killedPiece)
     } else MoveResponse(isValidMove, None)
   }
 
   def isKingChecked(point: Point): Boolean = {
     val piece = getTile(point).get.piece.get
-    println(piece)
     val validTiles = getAvaliableMoves(point)
-    println(validTiles)
-    val res = validTiles exists ( t => {
-      println((t.piece.isDefined && t.piece.get.toString == Piece.KING))
-      println((t.piece.isDefined && t.piece.get.isBlack != piece.isBlack))
-      (t.piece.isDefined && t.piece.get.toString == Piece.KING) && (t.piece.get.isBlack != piece.isBlack)
-    })
-  println(res)
-    res
+    validTiles exists ( t => (t.piece.isDefined && t.piece.get.toString.contains(Piece.KING)) && (t.piece.get.isBlack != piece.isBlack))
   }
 }
 
