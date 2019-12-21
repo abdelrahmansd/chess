@@ -54,6 +54,7 @@ class Board() {
   }
 
   def render = {
+    print("\u001b[2J")
     println("--------------------------------")
     for ( row <- tiles) {
       for (tile <- row) {
@@ -119,44 +120,21 @@ class Board() {
         }
       }
       case Some(piece: King) => {
-        var nextTile = getTile(Point(point.x - 1, point.y)) // up
-        var opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
 
-        opponentFound = false
-        nextTile = getTile(Point(point.x + 1, point.y)) // down
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
+        def validateTile(point: Point) = {
+          val nextTile = getTile(Point(point.x - 1, point.y)) // up
+          val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
+          if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
 
-        opponentFound = false
-        nextTile = getTile(Point(point.x, point.y + 1)) // right
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
-
-        opponentFound = false
-        nextTile = getTile(Point(point.x + 1, point.y - 1)) // left
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
-
-        opponentFound = false
-        nextTile = getTile(Point(point.x - 1, point.y + 1)) // up right
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
-
-        opponentFound = false
-        nextTile = getTile(Point(point.x - 1, point.y - 1)) // up left
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
-
-        opponentFound = false
-        nextTile = getTile(Point(point.x + 1, point.y + 1)) // down right
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
-
-        opponentFound = false
-        nextTile = getTile(Point(point.x + 1, point.y - 1)) // down left
-        opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
-        if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
+        }
+        validateTile(Point(point.x - 1, point.y)) // up
+        validateTile((Point(point.x + 1, point.y))) // down
+        validateTile((Point(point.x, point.y + 1))) // right
+        validateTile((Point(point.x + 1, point.y - 1))) // left
+        validateTile((Point(point.x - 1, point.y + 1))) // up right
+        validateTile((Point(point.x - 1, point.y - 1))) // up left
+        validateTile((Point(point.x + 1, point.y + 1))) // down right
+        validateTile((Point(point.x + 1, point.y - 1))) // down left
 
       }
       case Some(piece: Piece) => {
