@@ -9,8 +9,8 @@ case class KNight(_isBlack: Boolean) extends Piece {
 
   override var directionTypes: List[DirectionType] = List(DirectionType.LShape)
   override var isBlack: Boolean = _isBlack
-  isMulti = false
-  override def toString: String = Piece.KNIGHT
+  isMultiStep = false
+  override def toString: String = s"${Piece.KNIGHT}${if(isBlack) "(black)" else "(white)"}"
 }
 
 object KNight {

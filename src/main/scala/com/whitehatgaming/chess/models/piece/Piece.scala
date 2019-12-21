@@ -1,12 +1,11 @@
 package com.whitehatgaming.chess.models.piece
 
-import com.whitehatgaming.chess.models.piece.rules.{DirectionType, MoveType}
+import com.whitehatgaming.chess.models.piece.rules.DirectionType
 
 trait Piece {
 
   var isKilled = false
-  var moveType: MoveType = MoveType.Multi
-  var isMulti: Boolean = true
+  var isMultiStep: Boolean = true
 
   var isBlack: Boolean
   var directionTypes: List[DirectionType]

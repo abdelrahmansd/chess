@@ -1,18 +1,17 @@
-package com.whitehatgaming.chess.models.Board
+package com.whitehatgaming.chess.controller
 
-import scala.util.control.Breaks._
+import com.whitehatgaming.chess.models.Board.{Point, Tile}
 import com.whitehatgaming.chess.models.Game.Move
+import com.whitehatgaming.chess.models.Game.Move.MoveResponse
 import com.whitehatgaming.chess.models.piece._
 import com.whitehatgaming.chess.models.piece.rules.DirectionType
-
-import scala.util.control.Breaks
 
 class Board() {
 
   var tiles = Array.ofDim[Tile](8, 8)
 
   def init: Unit = {
-
+//    print("\u001b[2J") // clear console
     // init White Pieces
     tiles(7)(0) = Tile(coordinates = Point(7 , 0), piece = Some(Rook(false)))
     tiles(7)(1) = Tile(coordinates = Point(7 , 1), piece = Some(KNight(false)))
@@ -56,7 +55,7 @@ class Board() {
   }
 
   def render = {
-//    print("\u001b[2J")
+
     println("--------------------------------")
     for ( row <- tiles) {
       for (tile <- row) {
@@ -107,8 +106,8 @@ class Board() {
           validateEnemyTile(Point(tile.coordinates.x - 1, tile.coordinates.y - 1)) // up left
         }
       }
-      case Some(piece: Piece) => {
 
+      case Some(piece: Piece) => {
         def validateTile(point: Point) = {
           val nextTile = getTile(point)
           val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
@@ -124,9 +123,10 @@ class Board() {
                   do {
                     checkNextTile = validateTile(Point(x, point.y))
                     x += pair._1
-                  } while (checkNextTile && piece.isMulti)
+                  } while (checkNextTile && piece.isMultiStep)
                 })
               }
+
               case DirectionType.Horizontal => {
                 DirectionType.Horizontal.availableMoves foreach(pair => {
                   var checkNextTile = true
@@ -134,9 +134,10 @@ class Board() {
                   do {
                     checkNextTile = validateTile(Point(point.x, y))
                     y += pair._2
-                  } while (checkNextTile && piece.isMulti)
+                  } while (checkNextTile && piece.isMultiStep)
                 })
               }
+
               case DirectionType.Diagonal => {
                 DirectionType.Diagonal.availableMoves foreach( pair => {
                   var checkNextTile = true
@@ -144,12 +145,13 @@ class Board() {
                   var y = point.y
                   do {
                     checkNextTile = validateTile(Point({x += pair._1; x}, {y += pair._2; y}))
-                  } while (checkNextTile && piece.isMulti)
+                  } while (checkNextTile && piece.isMultiStep)
                 })
               }
+
               case DirectionType.LShape => {
                 DirectionType.LShape.availableMoves foreach(pair => {
-                  var nextTile = getTile(Point(point.x + pair._1, point.y + pair._2))
+                  val nextTile = getTile(Point(point.x + pair._1, point.y + pair._2))
                   if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
                 })
               }
@@ -160,35 +162,38 @@ class Board() {
     }
     validTiles
   }
-  def move(move: Move): Boolean = {
+
+  def move(move: Move): MoveResponse = {
     val currentTile = getTile(move.current).get
     val validTiles = getAvaliableMoves(move.current)
 
-    validTiles match {
-      case tiles: List[Tile] => {
-        val validPoints = tiles map ( t => t.coordinates)
-        val isValidMove: Boolean = validPoints.contains(move.next)
-        if( isValidMove) {
-          currentTile.piece.get match {
-            case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
-            case _ => print()
-          }
-          val nextTile = getTile(move.next).get
-          if(nextTile.piece.isDefined) move.killedPiece = nextTile.piece
-          nextTile.piece = currentTile.piece
-          currentTile.reset
-          isValidMove
-        } else false
-
+    val validPoints = validTiles map (t => t.coordinates)
+    val isValidMove: Boolean = validPoints.contains(move.next)
+    if (isValidMove) {
+      currentTile.piece.get match {
+        case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
+        case _ => print()
       }
-      case List() => false
-    }
+      val nextTile = getTile(move.next).get
+
+      nextTile.piece = currentTile.piece
+      currentTile.reset
+      MoveResponse(isValidMove, nextTile.piece)
+    } else MoveResponse(isValidMove, None)
   }
 
   def isKingChecked(point: Point): Boolean = {
     val piece = getTile(point).get.piece.get
+    println(piece)
     val validTiles = getAvaliableMoves(point)
-    validTiles exists ( t => t.piece.isDefined && t.piece.get.toString == Piece.KING && t.piece.get.isBlack != piece.isBlack )
+    println(validTiles)
+    val res = validTiles exists ( t => {
+      println((t.piece.isDefined && t.piece.get.toString == Piece.KING))
+      println((t.piece.isDefined && t.piece.get.isBlack != piece.isBlack))
+      (t.piece.isDefined && t.piece.get.toString == Piece.KING) && (t.piece.get.isBlack != piece.isBlack)
+    })
+  println(res)
+    res
   }
 }
 
