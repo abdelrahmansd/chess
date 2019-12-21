@@ -24,7 +24,7 @@ def start: Unit = {
         println(board.getTile(p1))
         println(board.getTile(p2))
 
-        val isValidMove = board.move(Move(p1, p2, None))
+        val isValidMove = board.move(Move(p1, p2, nextTurn, None))
         if(!isValidMove) println("Invalid Move!")
         else {
           nextTurn = if(nextTurn == player1) player2 else player1

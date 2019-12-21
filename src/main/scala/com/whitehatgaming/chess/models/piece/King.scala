@@ -10,6 +10,7 @@ case class King(_isBlack: Boolean) extends Piece {
   moveType = MoveType.Single
   override var isBlack: Boolean = _isBlack
   override var directionTypes: List[DirectionType] = List(DirectionType.Vertical, DirectionType.Horizontal, DirectionType.Diagonal)
+  isMulti = false
   override def toString: String = Piece.KING
 }
 

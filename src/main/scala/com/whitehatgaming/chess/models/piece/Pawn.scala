@@ -9,7 +9,6 @@ case class Pawn(_isBlack: Boolean) extends Piece{
 
   var isFirstMove: Boolean = true
   moveType = MoveType.Single
-  isBiDirectional = false
   override var isBlack: Boolean = _isBlack
   override var directionTypes: List[DirectionType] = List(DirectionType.Vertical, DirectionType.Diagonal)
 

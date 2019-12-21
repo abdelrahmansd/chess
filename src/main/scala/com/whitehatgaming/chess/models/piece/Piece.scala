@@ -6,7 +6,7 @@ trait Piece {
 
   var isKilled = false
   var moveType: MoveType = MoveType.Multi
-  var isBiDirectional: Boolean = true
+  var isMulti: Boolean = true
 
   var isBlack: Boolean
   var directionTypes: List[DirectionType]
