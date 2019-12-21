@@ -5,6 +5,11 @@ import com.whitehatgaming.chess.models.Board.{Board, Point}
 
 class Game (input: UserInputFile) {
 
+  val player1 = Player("Ebu", false)
+  val player2 = Player("Fady", true)
+
+  var nextTurn: Player = player1
+
 def start: Unit = {
 
     val board = new Board()
@@ -21,8 +26,11 @@ def start: Unit = {
 
         val isValidMove = board.move(Move(p1, p2, None))
         if(!isValidMove) println("Invalid Move!")
-        else board.render
-        if(isValidMove && board.isKingChecked(p2)) println( "player X King CHECKED!")
+        else {
+          nextTurn = if(nextTurn == player1) player2 else player1
+          board.render
+        }
+        if(isValidMove && board.isKingChecked(p2)) println( s"${nextTurn.name}'s King Is CHECKED!")
         nextMove = input.nextMove
     }
 
