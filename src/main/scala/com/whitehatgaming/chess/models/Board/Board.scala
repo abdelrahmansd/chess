@@ -10,8 +10,6 @@ import scala.util.control.Breaks
 class Board() {
 
   var tiles = Array.ofDim[Tile](8, 8)
-//  var tile = Tile(Point())
-//  var tiles = Array.fill(8,8)(" ")
 
   def init: Unit = {
 
@@ -33,8 +31,7 @@ class Board() {
 
     // init Black Pieces
     tiles(0)(0) = Tile(coordinates = Point(0 , 0), piece = Some(Rook(true)))
-//    tiles(0)(1) = Tile(coordinates = Point(0 , 1), piece = Some(KNight(true)))
-    tiles(0)(1) = Tile(coordinates = Point(0 , 1), piece = None)
+    tiles(0)(1) = Tile(coordinates = Point(0 , 1), piece = Some(KNight(true)))
     tiles(0)(2) = Tile(coordinates = Point(0 , 2), piece = Some(Bishop(true)))
     tiles(0)(3) = Tile(coordinates = Point(0 , 3), piece = Some(Queen(true)))
     tiles(0)(4) = Tile(coordinates = Point(0 , 4), piece = Some(King(true)))
@@ -44,19 +41,15 @@ class Board() {
 
     // init Black Pawns
     for(i <- 0 to 7) {
-      tiles(1)(i) = Tile(coordinates = Point(1 , i), piece = None)
-//      tiles(1)(i) = Tile(coordinates = Point(1 , i), piece = Some(Pawn(true)))
+      tiles(1)(i) = Tile(coordinates = Point(1 , i), piece = Some(Pawn(true)))
     }
 
+    // init other tiles
     for( i <- 2 to 5){
       for(j <- 0 to 7) {
         tiles(i)(j) = Tile(coordinates = Point(i , j), piece = None)
       }
     }
-
-    tiles(2)(5) = Tile(coordinates = Point(2 , 5), piece = Some(Pawn(false)))
-    //    tiles(0)(2) = Tile(coordinates = Point(0 , 2), piece = None)
-    tiles(1)(3) = Tile(coordinates = Point(1 , 3), piece = Some(KNight(true)))
 
   }
 
@@ -77,14 +70,13 @@ class Board() {
   }
 
   def getTile(point:Point): Option[Tile] = {
-    // validate valid position
     if((point.x <= 7 && point.x >=0) && (point.y <= 7 && point.y >=0)){
       Some(tiles(point.x)(point.y))
     } else None
 
   }
 
-  def avaliableMoves(point: Point): List[Tile] = {
+  def getAvaliableMoves(point: Point): List[Tile] = {
     val tile = getTile(point).get
     var validTiles: List[Tile] = List.empty[Tile]
      tile.piece match {
@@ -212,7 +204,6 @@ class Board() {
 
               }
               case DirectionType.Horizontal => {
-                println("HOOOOOOOOOOOOOOOOOOOOOOOOOOR")
 //                for(y <- point.y to 7 ) { // left to right
 //                  val nextTile = getTile(Point(point.x, y))
 //                  if (nextTile.isDefined && (nextTile.get.piece.isEmpty || (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack))) validTiles :+= nextTile.get
@@ -221,10 +212,8 @@ class Board() {
                 var checkNextTile = true
                 var y = point.y + 1
                 while (checkNextTile && y <= 7){ // left to right
-                  println("-*************************************************")
                   val nextTile = getTile(Point(point.x, y))
 
-                  println(nextTile)
                   val opponentFound = nextTile.isDefined && (nextTile.get.piece.isDefined && nextTile.get.piece.get.isBlack != piece.isBlack)
                   if (nextTile.isDefined && (nextTile.get.piece.isEmpty || opponentFound)) validTiles :+= nextTile.get
 
@@ -335,18 +324,32 @@ class Board() {
     }
     validTiles
   }
-//  def move(move: Move): Boolean = {
-//    getTile(move.current).piece match {
-//      case(p: Pawn) => {
-//        var validmoves: List[Move] = List()
-//          if (p.isBlack){ // handling black pieces
-//
-//          }
-//      }
-//      case _ =>
-//    }
-//    true
-//  }
+  def move(move: Move): Boolean = {
+    val validTiles = getAvaliableMoves(move.current)
+
+    validTiles match {
+      case tiles: List[Tile] => {
+        val validPoints = tiles map ( t => t.coordinates)
+        val isValidMove: Boolean = validPoints.contains(move.next)
+        if( isValidMove ) {
+          val currentTile = getTile(move.current).get
+          val nextTile = getTile(move.next).get
+          if(nextTile.piece.isDefined) move.killedPiece = nextTile.piece
+          nextTile.piece = currentTile.piece
+          currentTile.reset
+          true
+        } else false
+
+      }
+      case List() => false
+    }
+  }
+
+  def isKingChecked(point: Point): Boolean = {
+    val piece = getTile(point).get.piece.get
+    val validTiles = getAvaliableMoves(point)
+    validTiles exists ( t => t.piece.isDefined && t.piece.get.toString == Piece.KING && t.piece.get.isBlack != piece.isBlack )
+  }
 
 }
 

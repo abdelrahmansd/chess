@@ -13,7 +13,7 @@ case class Pawn(_isBlack: Boolean) extends Piece{
   override var isBlack: Boolean = _isBlack
   override var directionTypes: List[DirectionType] = List(DirectionType.Vertical, DirectionType.Diagonal)
 
-  override def toString: String = Piece.PAWN
+  override def toString: String = Piece.PAWN + " ," + isBlack
 }
 
 object Pawn {
