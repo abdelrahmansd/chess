@@ -17,3 +17,60 @@ $ sbt compile
 ```
 sbt run
 ```
+
+### Models ###
+
+#### Piece ####
+
+##### DirectionType #####
+
+##### Piece #####
+```
+The Abstract Type Of Piece
+```
+##### Rook #####
+```
+Rook Definition
+```
+##### KNight #####
+```
+```
+##### Bishop #####
+```
+```
+##### Queen #####
+```
+```
+##### King #####
+```
+```
+##### Pawn #####
+```
+```
+
+#### Game ####
+
+##### Move #####
+```
+```
+##### Player #####
+```
+```
+
+#### Board ####
+
+##### Point #####
+```
+```
+##### Tile #####
+```
+```
+
+### Controller ###
+
+#### Board ####
+```
+```
+#### Game ####
+```
+```
