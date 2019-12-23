@@ -21,56 +21,25 @@ sbt run
 ### Models ###
 
 #### Piece ####
-
-##### DirectionType #####
-
-##### Piece #####
-```
-The Abstract Type Of Piece
-```
-##### Rook #####
-```
-Rook Definition
-```
-##### KNight #####
-```
-```
-##### Bishop #####
-```
-```
-##### Queen #####
-```
-```
-##### King #####
-```
-```
-##### Pawn #####
-```
-```
+###### DirectionType ######
+###### Piece ######
+###### Rook ######
+###### KNight ######
+###### Bishop ######
+###### Queen ######
+###### King ######
+###### Pawn ######
 
 #### Game ####
-
-##### Move #####
-```
-```
-##### Player #####
-```
-```
+###### Move ######
+###### Player ######
 
 #### Board ####
+###### Point ######
+###### Tile ######
 
-##### Point #####
-```
-```
-##### Tile #####
-```
-```
 
 ### Controller ###
+###### Board ######
+###### Game ######
 
-#### Board ####
-```
-```
-#### Game ####
-```
-```
