@@ -10,7 +10,8 @@ case class King(_isBlack: Boolean) extends Piece {
   override var isBlack: Boolean = _isBlack
   override var directionTypes: List[DirectionType] = List(DirectionType.Vertical, DirectionType.Horizontal, DirectionType.Diagonal)
   isMultiStep = false
-  override def toString: String = s"${Piece.KING}${if(isBlack) "(black)" else "(white)"}"
+
+  override def toString: String = s"${Piece.KING}${if (isBlack) "(black)" else "(white)"}"
 }
 
 object King {

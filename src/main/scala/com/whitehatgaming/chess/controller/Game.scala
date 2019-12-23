@@ -2,7 +2,6 @@ package com.whitehatgaming.chess.controller
 
 import com.whitehatgaming.UserInputFile
 import com.whitehatgaming.chess.models.Board.Point
-import com.whitehatgaming.chess.models.Game.Move.MoveResponse
 import com.whitehatgaming.chess.models.Game.{Move, Player}
 import com.whitehatgaming.chess.models.piece.Piece
 

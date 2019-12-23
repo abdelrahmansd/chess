@@ -67,16 +67,59 @@ class Board() {
       println()
       println("   -----------------------------------------------------------------------------------------------------------------------------")
     }
-    if(!killedPieces.isEmpty) print("Killed Pieces: ")
+    if (!killedPieces.isEmpty) print("Killed Pieces: ")
     killedPieces foreach (piece => print(s"${piece} "))
     println()
+  }
+
+  def isValidMove(move: Move): Boolean = {
+    val currentTile = getTile(move.current)
+    if (currentTile.isDefined && currentTile.get.piece.isDefined && currentTile.get.piece.get.isBlack != move.player.isBlack) return false // invalid player
+    val validTiles = getAvailableMoves(move.current)
+    val validPoints = validTiles map (t => t.coordinates)
+    validPoints.contains(move.next)
+  }
+
+  def move(move: Move): MoveResponse = {
+    val currentTile = getTile(move.current).get
+    currentTile.piece.get match {
+      case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
+      case _ => print("")
+    }
+    val nextTile = getTile(move.next).get
+    val killedPiece = nextTile.piece
+    nextTile.piece = currentTile.piece
+    currentTile.reset
+    MoveResponse(killedPiece)
   }
 
   def getTile(point: Point): Option[Tile] = {
     if ((point.x <= rowCount - 1 && point.x >= 0) && (point.y <= colCount - 1 && point.y >= 0)) {
       Some(tiles(point.x)(point.y))
     } else None
+  }
 
+  def undoMove(move: Move, moveRes: MoveResponse) = {
+    val currentTile = getTile(move.current).get
+    val nextTile = getTile(move.next).get
+
+    nextTile.piece.get match {
+      case piece: Pawn if !piece.isFirstMove => piece.isFirstMove = true
+      case _ => print("")
+    }
+    currentTile.piece = nextTile.piece
+    nextTile.piece = moveRes.killedPiece
+  }
+
+  def isKingSafe(isBlack: Boolean) = {
+    val opponentTiles = tiles flatMap (tilesRow => tilesRow.filter(tile => tile.piece.isDefined && tile.piece.get.isBlack != isBlack))
+    !(opponentTiles exists (tile => isKingChecked(tile.coordinates)))
+  }
+
+  def isKingChecked(point: Point): Boolean = {
+    val piece = getTile(point).get.piece.get
+    val validTiles = getAvailableMoves(point)
+    validTiles exists (t => (t.piece.isDefined && t.piece.get.toString.contains(Piece.KING)) && (t.piece.get.isBlack != piece.isBlack))
   }
 
   def getAvailableMoves(point: Point): List[Tile] = {
@@ -138,7 +181,8 @@ class Board() {
                 var y = point.y
                 do {
                   checkNextTile = validateTile(Point(point.x, {
-                    y += pair._2; y
+                    y += pair._2;
+                    y
                   }))
 
                 } while (checkNextTile && piece.isMultiStep)
@@ -174,50 +218,6 @@ class Board() {
       case None => List.empty[Tile]
     }
     validTiles
-  }
-
-  def isValidMove(move: Move): Boolean = {
-    val currentTile = getTile(move.current)
-    if (currentTile.isDefined && currentTile.get.piece.isDefined && currentTile.get.piece.get.isBlack != move.player.isBlack) return false // invalid player
-    val validTiles = getAvailableMoves(move.current)
-    val validPoints = validTiles map (t => t.coordinates)
-    validPoints.contains(move.next)
-  }
-
-  def move(move: Move): MoveResponse = {
-    val currentTile = getTile(move.current).get
-    currentTile.piece.get match {
-      case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
-      case _ => print("")
-    }
-    val nextTile = getTile(move.next).get
-    val killedPiece = nextTile.piece
-    nextTile.piece = currentTile.piece
-    currentTile.reset
-    MoveResponse(killedPiece)
-  }
-
-  def undoMove(move: Move, moveRes: MoveResponse) = {
-    val currentTile = getTile(move.current).get
-    val nextTile = getTile(move.next).get
-
-    nextTile.piece.get match {
-      case piece: Pawn if !piece.isFirstMove => piece.isFirstMove = true
-      case _ => print("")
-    }
-    currentTile.piece = nextTile.piece
-    nextTile.piece = moveRes.killedPiece
-  }
-
-  def isKingChecked(point: Point): Boolean = {
-    val piece = getTile(point).get.piece.get
-    val validTiles = getAvailableMoves(point)
-    validTiles exists (t => (t.piece.isDefined && t.piece.get.toString.contains(Piece.KING)) && (t.piece.get.isBlack != piece.isBlack))
-  }
-
-  def isKingSafe(isBlack: Boolean) = {
-    val opponentTiles = tiles flatMap (tilesRow => tilesRow.filter(tile => tile.piece.isDefined && tile.piece.get.isBlack != isBlack))
-    !(opponentTiles exists (tile => isKingChecked(tile.coordinates)))
   }
 }
 

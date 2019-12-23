@@ -1,4 +1,5 @@
 package com.whitehatgaming.chess.models.piece
+
 import com.whitehatgaming.chess.models.piece.rules.DirectionType
 
 /*
@@ -10,7 +11,8 @@ case class KNight(_isBlack: Boolean) extends Piece {
   override var directionTypes: List[DirectionType] = List(DirectionType.LShape)
   override var isBlack: Boolean = _isBlack
   isMultiStep = false
-  override def toString: String = s"${Piece.KNIGHT}${if(isBlack) "(black)" else "(white)"}"
+
+  override def toString: String = s"${Piece.KNIGHT}${if (isBlack) "(black)" else "(white)"}"
 }
 
 object KNight {

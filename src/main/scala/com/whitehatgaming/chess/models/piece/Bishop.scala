@@ -9,9 +9,10 @@ case class Bishop(_isBlack: Boolean) extends Piece {
 
   override var directionTypes: List[DirectionType] = List(DirectionType.Diagonal)
   override var isBlack: Boolean = _isBlack
-  override def toString: String = s"${Piece.BISHOP}${if(isBlack) "(black)" else "(white)"}"
+
+  override def toString: String = s"${Piece.BISHOP}${if (isBlack) "(black)" else "(white)"}"
 }
 
-object  Bishop {
+object Bishop {
 
 }
