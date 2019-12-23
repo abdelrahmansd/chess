@@ -7,9 +7,9 @@ object Boot extends App {
 
   println("Hello chess!")
 
-  val stepsPath = Paths.get("./src/main/resources/data/gameover.txt").toAbsolutePath
-    val input = new UserInputFile(stepsPath.toString)
+  val stepsPath = Paths.get("./src/main/resources/data/in-check.txt").toAbsolutePath
+  val input = new UserInputFile(stepsPath.toString)
 
-  val board =new Board().init
+  val board = new Board().init
   val game = new Game(input).start
 }
