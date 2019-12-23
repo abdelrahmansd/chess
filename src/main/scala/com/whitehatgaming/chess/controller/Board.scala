@@ -56,17 +56,17 @@ class Board() {
 
   def render = {
 
-    println("--------------------------------")
+    println("--------------------------------------------------------------------------------------------------------------------------------")
     for ( row <- tiles) {
       for (tile <- row) {
         tile.piece match {
-          case Some(piece) if piece.isBlack == true  => print(Console.BLUE + " " + piece.toString.head + Console.WHITE +" |")
-          case Some(piece) if piece.isBlack == false  => print(Console.WHITE + " " + piece.toString.head + " |")
-          case _ => print("   |")
+          case Some(piece) if piece.isBlack == true  => print(Console.BLUE + "\t" + piece.toString.split("\\(")(0) + Console.WHITE +"\t|")
+          case Some(piece) if piece.isBlack == false  => print(Console.WHITE + "\t" + piece.toString.split("\\(")(0) + "\t|")
+          case _ => print("\t\t|")
         }
       }
       println()
-      println("--------------------------------")
+      println("--------------------------------------------------------------------------------------------------------------------------------")
 
     }
   }
