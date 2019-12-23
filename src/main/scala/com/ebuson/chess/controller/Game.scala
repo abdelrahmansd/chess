@@ -1,9 +1,9 @@
-package com.whitehatgaming.chess.controller
+package com.ebuson.chess.controller
 
+import com.ebuson.chess.models.Board.Point
+import com.ebuson.chess.models.Game.{Move, Player}
+import com.ebuson.chess.models.piece.Piece
 import com.whitehatgaming.UserInputFile
-import com.whitehatgaming.chess.models.Board.Point
-import com.whitehatgaming.chess.models.Game.{Move, Player}
-import com.whitehatgaming.chess.models.piece.Piece
 
 class Game(input: UserInputFile) {
 

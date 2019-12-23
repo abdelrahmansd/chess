@@ -1,6 +1,6 @@
-package com.whitehatgaming.chess.models.Board
+package com.ebuson.chess.models.Board
 
-import com.whitehatgaming.chess.models.piece.Piece
+import com.ebuson.chess.models.piece.Piece
 
 case class Tile(coordinates: Point, var piece: Option[Piece]) {
 

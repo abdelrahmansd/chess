@@ -1,4 +1,4 @@
-package com.whitehatgaming.chess.models.Board
+package com.ebuson.chess.models.Board
 
 case class Point(x: Int, y: Int)
 

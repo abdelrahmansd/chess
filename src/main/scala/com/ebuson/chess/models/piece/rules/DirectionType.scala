@@ -1,4 +1,4 @@
-package com.whitehatgaming.chess.models.piece.rules
+package com.ebuson.chess.models.piece.rules
 
 trait DirectionType {
   val availableMoves: List[(Int, Int)]

@@ -1,6 +1,6 @@
-package com.whitehatgaming.chess.models.piece
+package com.ebuson.chess.models.piece
 
-import com.whitehatgaming.chess.models.piece.rules.DirectionType
+import com.ebuson.chess.models.piece.rules.DirectionType
 
 /*
 * The knight can move in an L shape with sides of 2 and 1 squares respectively.

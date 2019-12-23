@@ -1,10 +1,11 @@
-package com.whitehatgaming.chess.controller
+package com.ebuson.chess.controller
 
-import com.whitehatgaming.chess.models.Board.{Point, Tile}
-import com.whitehatgaming.chess.models.Game.Move
-import com.whitehatgaming.chess.models.Game.Move.MoveResponse
-import com.whitehatgaming.chess.models.piece._
-import com.whitehatgaming.chess.models.piece.rules.DirectionType
+import com.ebuson.chess.models.Board.{Point, Tile}
+import com.ebuson.chess.models.Game.Move
+import com.ebuson.chess.models.Game.Move.MoveResponse
+import com.ebuson.chess.models.piece._
+import com.ebuson.chess.models.piece.rules.DirectionType
+import com.ebuson.chess.models.piece.rules.DirectionType.Vertical
 
 class Board() {
 
@@ -54,9 +55,9 @@ class Board() {
   def render(killedPieces: List[Piece] = List.empty) = {
     println("\tA\t  \tB\t \tC\t \tD\t \tE\t \tF\t \tG\t \tH\t")
     println("   -----------------------------------------------------------------------------------------------------------------------------")
-    var count = 0
+    var count = 9
     for (row <- tiles) {
-      print(s"${count += 1; count} |")
+      print(s"${count -= 1; count} |")
       for (tile <- row) {
         tile.piece match {
           case Some(piece) if piece.isBlack == true => print(Console.BLUE + "\t" + piece.toString.split("\\(")(0) + Console.WHITE + "\t|")
@@ -162,7 +163,7 @@ class Board() {
 
         piece.directionTypes.foreach(directionType => {
           directionType match {
-            case DirectionType.Vertical => {
+            case Vertical => {
               DirectionType.Vertical.availableMoves foreach (pair => {
                 var checkNextTile = true
                 var x = point.x

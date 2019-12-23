@@ -1,6 +1,6 @@
-package com.whitehatgaming.chess.models.piece
+package com.ebuson.chess.models.piece
 
-import com.whitehatgaming.chess.models.piece.rules.DirectionType
+import com.ebuson.chess.models.piece.rules.DirectionType
 
 /*
 * The king can move only 1 square but in any direction

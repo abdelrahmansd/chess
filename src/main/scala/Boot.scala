@@ -1,7 +1,7 @@
 import java.nio.file.Paths
 
+import com.ebuson.chess.controller.{Board, Game}
 import com.whitehatgaming.UserInputFile
-import com.whitehatgaming.chess.controller.{Board, Game}
 
 object Boot extends App {
 

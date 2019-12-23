@@ -1,6 +1,6 @@
-package com.whitehatgaming.chess.models.piece
+package com.ebuson.chess.models.piece
 
-import com.whitehatgaming.chess.models.piece.rules.DirectionType
+import com.ebuson.chess.models.piece.rules.DirectionType
 
 /*
 * The pawn can move one square forward on subsequent moves (when not taking an opponent piece)
