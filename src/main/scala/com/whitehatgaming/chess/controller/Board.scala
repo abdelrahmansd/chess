@@ -163,29 +163,48 @@ class Board() {
     validTiles
   }
 
+  def isValidmove(move: Move): Boolean = {
+    val currentTile = getTile(move.current).get
+    if(currentTile.piece.get.isBlack != move.player.isBlack) return false // validate Turn
+    val validTiles = getAvaliableMoves(move.current)
+    val validPoints = validTiles map (t => t.coordinates)
+    validPoints.contains(move.next)
+  }
+
   def move(move: Move): MoveResponse = {
     val currentTile = getTile(move.current).get
-    val validTiles = getAvaliableMoves(move.current)
+    currentTile.piece.get match {
+      case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
+      case _ => print("")
+    }
+    val nextTile = getTile(move.next).get
+    val killedPiece = nextTile.piece
+    nextTile.piece = currentTile.piece
+    currentTile.reset
+    MoveResponse(killedPiece)
+  }
 
-    val validPoints = validTiles map (t => t.coordinates)
-    val isValidMove: Boolean = validPoints.contains(move.next)
-    if (isValidMove) {
-      currentTile.piece.get match {
-        case piece: Pawn if piece.isFirstMove => piece.isFirstMove = false
-        case _ => print("")
-      }
-      val nextTile = getTile(move.next).get
-      val killedPiece = nextTile.piece
-      nextTile.piece = currentTile.piece
-      currentTile.reset
-      MoveResponse(isValidMove, killedPiece)
-    } else MoveResponse(isValidMove, None)
+  def undoMove(move: Move, moveRes: MoveResponse) = {
+    val currentTile = getTile(move.current).get
+    val nextTile = getTile(move.next).get
+
+    nextTile.piece.get match {
+      case piece: Pawn if !piece.isFirstMove => piece.isFirstMove = true
+      case _ => print("")
+    }
+    currentTile.piece = nextTile.piece
+    nextTile.piece = moveRes.killedPiece
   }
 
   def isKingChecked(point: Point): Boolean = {
     val piece = getTile(point).get.piece.get
     val validTiles = getAvaliableMoves(point)
     validTiles exists ( t => (t.piece.isDefined && t.piece.get.toString.contains(Piece.KING)) && (t.piece.get.isBlack != piece.isBlack))
+  }
+
+  def isKingSafe(isBlack: Boolean) = {
+    val opponentTiles = tiles flatMap ( tilesRow => tilesRow.filter(tile => tile.piece.isDefined && tile.piece.get.isBlack != isBlack))
+    !(opponentTiles exists( tile => isKingChecked(tile.coordinates)))
   }
 }
 

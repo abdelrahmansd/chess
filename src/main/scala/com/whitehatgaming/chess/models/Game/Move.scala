@@ -6,6 +6,6 @@ import com.whitehatgaming.chess.models.piece.Piece
 case class Move (current: Point, next: Point, player: Player)
 
 object Move {
-  case class MoveResponse(isValid: Boolean, killedPiece: Option[Piece])
+  case class MoveResponse(killedPiece: Option[Piece])
 }
 

@@ -13,7 +13,7 @@ class Game (input: UserInputFile) {
 
 
   var inCheck = scala.collection.mutable.Map((false -> false), (true -> false))
-  var nextTurn: Player = player1
+  var currentTurnPlayer: Player = player1
 
   def start: Unit = {
 
@@ -24,33 +24,34 @@ class Game (input: UserInputFile) {
     var killedPieces: List[Piece] = List.empty
     var nextMove = input.nextMove
     while (nextMove != null && !gameOver) {
-      scala.io.StdIn.readLine(s"press enter for next move(${if(nextTurn.isBlack) "(black)" else "(white)"})!")
+      scala.io.StdIn.readLine(s"press enter for next move(${if(currentTurnPlayer.isBlack) "(black)" else "(white)"})!")
       val p1 = Point(nextMove(1), nextMove(0))
       val p2 = Point(nextMove(3), nextMove(2))
-
-      val moveRes: MoveResponse = board.move(Move(p1, p2, nextTurn))
-      if (!moveRes.isValid) println("\nInvalid Move!")
+      val move: Move = Move(p1, p2, currentTurnPlayer)
+      val isValidMove: Boolean = board.isValidmove(move)
+      if (!isValidMove) println("\nInvalid Move!")
       else {
-        if(moveRes.killedPiece.isDefined) killedPieces :+= moveRes.killedPiece.get
-        board.render
-        if (inCheck(nextTurn.isBlack))  println(" Player In CHECK!")
-        nextTurn = if (nextTurn == player1) player2 else player1 // Flip player
-        killedPieces foreach(piece => print(s"${piece} "))
-      }
-
-      if (moveRes.isValid && board.isKingChecked(p2)) {
-        println(s"\n${nextTurn.name}'s King Is CHECKED!")
-        inCheck(nextTurn.isBlack) = true
-
-      }
-      if (moveRes.killedPiece.isDefined && moveRes.killedPiece.get.toString.contains(Piece.KING)) {
-        gameOver = true
-        val winner = if (nextTurn == player1) player2 else player1
-        println(s"\n${winner.toString} WIN!")
+        val moveRes = board.move(move)
+        if (board.isKingSafe(currentTurnPlayer.isBlack)){
+          if(moveRes.killedPiece.isDefined) killedPieces :+= moveRes.killedPiece.get
+          currentTurnPlayer = if (currentTurnPlayer == player1) player2 else player1 // Flip player
+          board.render
+          killedPieces foreach (piece => print(s"${piece} "))
+          if (isValidMove && board.isKingChecked(p2)) println(s"\n${currentTurnPlayer.name}'s King Is CHECKED!")
+          if (moveRes.killedPiece.isDefined && moveRes.killedPiece.get.toString.contains(Piece.KING)) {
+            gameOver = true
+            val winner = if (currentTurnPlayer == player1) player2 else player1
+            println(s"\n${winner.toString} WIN!")
+          }
+        }else {
+          println(" You Are In CHECK!")
+          board.undoMove(move, moveRes)
+        }
       }
       nextMove = input.nextMove
     }
   }
+
 
 }
 
